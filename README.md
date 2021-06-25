@@ -1,20 +1,32 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+As part of NIC-2.0 (Converting the Platform-2.0 monilith to Microservices), this project is for 
+**billingstats microservice**
 
 ### What is this repository for? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* billingstats MicroService
+* version: 0.0.1
+
 
 ### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
+* Clone the git repository and import project into IntelliJ/Eclipse as gradle project 
+* Need to have following installed in your local:
+  - git latest
+  - gradle 6.8.3
+  - docker latest
+  - Java version : Amazon Corretto Open JDK 11.0.11  
+    
+* Project Features: 
+  - Springboot 2.3.11 (Not the latest version because of compatibility with AWS SDK)
+  - Java version :  Amazon Corretto Open JDK 11.0.11
+  - Kafka Consumer
+
+Yet to define the following:
 * Database configuration
 * How to run tests
+  - gradle task to run tests
 * Deployment instructions
 
 ### Contribution guidelines ###
@@ -25,5 +37,8 @@ This README would normally document whatever steps are necessary to get your app
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+* [Vishnu Sunkari](mailto:vishnu.sunkari@nationsinfocorp.com)
+* Engineering Team at Nations Info Corp
+
+## Swagger Information
+http://<hostname>/<contextpath>/swagger-ui.html
