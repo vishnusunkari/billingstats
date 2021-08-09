@@ -21,11 +21,11 @@ public enum BillingStatsEnum {
     RECURRING_INVOICES_GENERATED("recurringInvoicesGenerated", 1),
     ;
 
-    public String name;
+    public String key;
     public int value;
 
-    BillingStatsEnum(String name, int value){
-        this.name = name;
+    BillingStatsEnum(String key, int value){
+        this.key = key;
         this.value = value;
     }
 
