@@ -45,6 +45,14 @@ dependencies {
     implementation group: 'org.apache.kafka', name: 'kafka-streams', version: '2.8.0'
     implementation group: 'org.apache.kafka', name: 'kafka-clients', version: '2.8.0'
     implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.5.13.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.4.5'
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.25'
+
+    //implementation group: 'org.springframework.cloud', name: 'spring-cloud-stream', version: '3.1.3'
+    //implementation group: 'org.springframework.cloud', name: 'spring-cloud-stream-binder-kafka-streams', version: '3.1.3'
+
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
     implementation group: 'com.amazonaws', name: 'aws-xray-recorder-sdk-spring', version: '2.9.0'
     implementation group: 'com.amazonaws', name: 'aws-xray-recorder-sdk-apache-http', version: '2.9.0'
