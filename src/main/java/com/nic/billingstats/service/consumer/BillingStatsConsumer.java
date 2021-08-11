@@ -31,7 +31,7 @@ public class BillingStatsConsumer {
     @Autowired
     BillingStatsService billingStatsService;
 
-    @KafkaListener(topics = "#{'${kafka.topic.billingstatsTopic}'}")
+    @KafkaListener(topics = "#{'${kafka.topic.billingStatsTopic}'}")
     public void receive(@Payload List<String> messages,
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) List<Integer> partitions,
                         @Header(KafkaHeaders.OFFSET) List<Long> offsets,

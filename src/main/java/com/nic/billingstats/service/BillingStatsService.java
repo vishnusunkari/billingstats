@@ -31,7 +31,6 @@ public class BillingStatsService {
             log.info("Updated billingStatsCurrent : {}", billingStatsCurrent );
             billingStatsRepository.save(billingStatsCurrent);
             log.info("Updated BillingStats are saved to db");
-            //billingStats.setMembershipsProcessed();
         }
         log.info("BillingStatsService.processBillingStats End");
     }
@@ -50,7 +49,7 @@ public class BillingStatsService {
             case "superbadCancels": billingStats.increaseSuperbadCancels(billingStatsMessage.getBillingStatsValue());break;
             case "firstInvoicesGenerated": billingStats.increaseFirstInvoicesGenerated(billingStatsMessage.getBillingStatsValue());break;
             case "recurringInvoicesGenerated": billingStats.increaseRecurringInvoicesGenerated(billingStatsMessage.getBillingStatsValue());break;
-            default : log.info("No match for given billingStatsMessage name : " + billingStatsMessage.getBillingStatsName());
+            default : log.error("No match for given billingStatsMessage name : " + billingStatsMessage.getBillingStatsName());
         }
         return billingStats;
     }
