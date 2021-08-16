@@ -30,10 +30,10 @@ public class BillingStats implements java.io.Serializable {
     private Date endTime;
 
     @Column(name = "avg_time_membership_processed")
-    private float averageTimeMembershipProcessed;
+    private Float averageTimeMembershipProcessed;
 
     @Column(name = "avg_time_invoice_processed")
-    private float averageTimeInvoiceProcessed;
+    private Float averageTimeInvoiceProcessed;
 
     @Column(name = "memberships_processed")
     private int membershipsProcessed;
