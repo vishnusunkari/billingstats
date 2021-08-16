@@ -5,8 +5,6 @@ package com.nic.billingstats.model;
  * @created 07/12/2021
  */
 public enum BillingStatsEnum {
-    //AVERAGE_TIME_MEMBERSHIP_PROCESSED("averageTimeMembershipProcessed", 1),
-    //AVERAGE_TIME_INVOICE_PROCESSED("averageTimeInvoiceProcessed", 1),
     MEMBERSHIPS_PROCESSED("membershipsProcessed", 1),
     MEMBERSHIPS_EXPIRED("membershipsExpired", 1),
     MEMBERSHIPS_SUSPENDED("membershipsSuspended", 1),
