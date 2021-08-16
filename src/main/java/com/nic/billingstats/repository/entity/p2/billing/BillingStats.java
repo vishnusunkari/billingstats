@@ -29,12 +29,6 @@ public class BillingStats implements java.io.Serializable {
     @Column(name = "end_time")
     private Date endTime;
 
-    @Column(name = "avg_time_membership_processed")
-    private Float averageTimeMembershipProcessed;
-
-    @Column(name = "avg_time_invoice_processed")
-    private Float averageTimeInvoiceProcessed;
-
     @Column(name = "memberships_processed")
     private int membershipsProcessed;
 
