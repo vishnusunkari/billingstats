@@ -28,7 +28,7 @@ docker {
 dockerRun {
     name "${project.name}"
     image imageName
-    ports '8200:8200'
+    ports '8003:8003'
     clean true
 }
 
