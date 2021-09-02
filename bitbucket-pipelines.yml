@@ -60,11 +60,10 @@ pipelines:
           caches:
             - gradle
           services:
-            - docker # Enable Docker for your repository
+            - docker
           script:
-            # Modify the commands below to build your repository.
             # Build Gradle Project
-            - bash ./gradlew clean build -Pspring.profiles.active=dev
+            - bash ./gradlew clean build -Pspring.profiles.active=qa
           artifacts:
             - build/libs/*.jar
       - step:
@@ -74,12 +73,10 @@ pipelines:
             # Replace the docker image name in the task definition with the newly pushed image.
             - export IMAGE_NAME="707745566478.dkr.ecr.us-east-1.amazonaws.com/qa-nic-billingstats:${BITBUCKET_BUILD_NUMBER}"
             - export IMAGE_NAME_LATEST="707745566478.dkr.ecr.us-east-1.amazonaws.com/qa-nic-billingstats:latest"
-            # aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 707745566478.dkr.ecr.us-east-1.amazonaws.com
             - eval $(aws ecr get-login --region us-east-1 --no-include-email)
             # Build the docker image and push to Dockerhub.
             - docker build -t $IMAGE_NAME .
             - docker build -t $IMAGE_NAME_LATEST .
-            #- docker login --username "$DOCKERHUB_USERNAME" --password "$DOCKERHUB_PASSWORD"
             - docker push $IMAGE_NAME
             - docker push $IMAGE_NAME_LATEST
             # Update the task definition.
@@ -102,27 +99,24 @@ pipelines:
           caches:
             - gradle
           services:
-            - docker # Enable Docker for your repository
+            - docker
           script:
-            # Modify the commands below to build your repository.
             # Build Gradle Project
-            - bash ./gradlew clean build -Pspring.profiles.active=qa
+            - bash ./gradlew clean build -Pspring.profiles.active=prod
           artifacts:
             - build/libs/*.jar
-            #- docker push "$IMAGE_NAME"
       - step:
           name: Deploy to ECS
+          trigger: manual
           image: atlassian/pipelines-awscli
           script:
             # Replace the docker image name in the task definition with the newly pushed image.
-            - export IMAGE_NAME="707745566478.dkr.ecr.us-east-1.amazonaws.com/qa-nic-billingstats:${BITBUCKET_BUILD_NUMBER}"
-            - export IMAGE_NAME_LATEST="707745566478.dkr.ecr.us-east-1.amazonaws.com/qa-nic-billingstats:latest"
-            # aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 707745566478.dkr.ecr.us-east-1.amazonaws.com
-            - eval $(aws ecr get-login --region us-east-1 --no-include-email)
+            - export IMAGE_NAME="707745566478.dkr.ecr.us-west-2.amazonaws.com/prod-nic-billingstats:${BITBUCKET_BUILD_NUMBER}"
+            - export IMAGE_NAME_LATEST="707745566478.dkr.ecr.us-west-2.amazonaws.com/prod-nic-billingstats:latest"
+            - eval $(aws ecr get-login --region us-west-2 --no-include-email)
             # Build the docker image and push to Dockerhub.
             - docker build -t $IMAGE_NAME .
             - docker build -t $IMAGE_NAME_LATEST .
-            #- docker login --username "$DOCKERHUB_USERNAME" --password "$DOCKERHUB_PASSWORD"
             - docker push $IMAGE_NAME
             - docker push $IMAGE_NAME_LATEST
             # Update the task definition.
@@ -131,9 +125,9 @@ pipelines:
                 AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
                 AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
                 AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-                CLUSTER_NAME: 'qa-nic-ecs-cluster'
+                CLUSTER_NAME: 'prod-nic-ecs-cluster'
                 SERVICE_NAME: 'billingstats'
                 FORCE_NEW_DEPLOYMENT: 'true'
-            - aws ecs update-service --service billingstats --cluster qa-nic-ecs-cluster --force-new-deployment
+            - aws ecs update-service --region us-west-2 --service billingstats --cluster prod-nic-ecs-cluster --force-new-deployment
 
 
