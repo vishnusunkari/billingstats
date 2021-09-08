@@ -51,6 +51,15 @@ public class BillingStatsService {
             case "recurringInvoicesGenerated": billingStats.increaseRecurringInvoicesGenerated(billingStatsMessage.getBillingStatsValue());break;
             default : log.error("No match for given billingStatsMessage name : " + billingStatsMessage.getBillingStatsName());
         }
+
+        if (billingStatsMessage.isVerifyCalled()) {
+            billingStats.increaseVerifyCallCount();
+        }
+
+        if (billingStatsMessage.getAmountCollected() != null) {
+            billingStats.addAmountCollected(billingStatsMessage.getAmountCollected());
+        }
+
         return billingStats;
     }
 }
