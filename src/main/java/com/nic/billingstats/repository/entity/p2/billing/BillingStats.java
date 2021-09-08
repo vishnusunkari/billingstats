@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -65,6 +66,12 @@ public class BillingStats implements java.io.Serializable {
     @Column(name = "recurring_invoices_generated")
     private int recurringInvoicesGenerated;
 
+    @Column(name = "verify_call_count")
+    private int verifyCallCount;
+
+    @Column(name = "amount_collected")
+    private BigDecimal amountCollected;
+
     public void increaseMembershipsProcessed(Long valueToIncrement) {
         membershipsProcessed+=valueToIncrement;
     }
@@ -113,6 +120,14 @@ public class BillingStats implements java.io.Serializable {
         this.recurringInvoicesGenerated+=valueToIncrement;;
     }
 
+    public void addAmountCollected(BigDecimal amountCollected) {
+        this.amountCollected = this.amountCollected != null ? this.amountCollected.add(amountCollected) : amountCollected;
+    }
+
+    public void increaseVerifyCallCount() {
+        this.verifyCallCount = this.verifyCallCount + 1;
+    }
+
     public BillingStats updateBillingStats(BillingStats billingStatsCurrent) {
         this.membershipsProcessed += billingStatsCurrent.getMembershipsProcessed();
         this.membershipsExpired += billingStatsCurrent.getMembershipsExpired();
@@ -126,6 +141,8 @@ public class BillingStats implements java.io.Serializable {
         this.superbadCancels += billingStatsCurrent.getSuperbadCancels();
         this.firstInvoicesGenerated += billingStatsCurrent.getFirstInvoicesGenerated();
         this.recurringInvoicesGenerated += billingStatsCurrent.getRecurringInvoicesGenerated();
+        this.amountCollected = this.amountCollected.add(billingStatsCurrent.getAmountCollected() != null ? billingStatsCurrent.getAmountCollected() : new BigDecimal(0));
+        this.verifyCallCount += billingStatsCurrent.getVerifyCallCount();
         return this;
     }
 }
