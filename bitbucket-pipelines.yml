@@ -110,7 +110,6 @@ pipelines:
           trigger: manual
           image: atlassian/pipelines-awscli
           script:
-            # Replace the docker image name in the task definition with the newly pushed image.
             - export IMAGE_NAME="707745566478.dkr.ecr.us-west-2.amazonaws.com/prod-nic-billingstats:${BITBUCKET_BUILD_NUMBER}"
             - export IMAGE_NAME_LATEST="707745566478.dkr.ecr.us-west-2.amazonaws.com/prod-nic-billingstats:latest"
             - eval $(aws ecr get-login --region us-west-2 --no-include-email)
@@ -124,7 +123,7 @@ pipelines:
               variables:
                 AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
                 AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                AWS_DEFAULT_REGION: 'us-west-2'
                 CLUSTER_NAME: 'prod-nic-ecs-cluster'
                 SERVICE_NAME: 'billingstats'
                 FORCE_NEW_DEPLOYMENT: 'true'
