@@ -37,7 +37,7 @@ class AuthenticationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        log.info("Inside AuthenticationFilter ...");
+        log.debug("Inside AuthenticationFilter ...");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String authHeader = httpRequest.getHeader("authorization");
         /**
@@ -49,10 +49,9 @@ class AuthenticationFilter implements Filter {
         String remoteClientAddress = StringUtils.isNotBlank(remoteAddress) ? remoteAddress : httpRequest.getRemoteAddr();
         String remoteUserAgent = httpRequest.getHeader("User-Agent");
         String urlPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
-        log.info("RemoteClientAddress : {}, User-Agent: {}, Authorization Header: {}", remoteClientAddress, remoteUserAgent, authHeader);
 
         if (excludeURLPathList.contains(urlPath)) {
-            log.info("health check");
+            log.debug("health check");
             chain.doFilter(request, response);
         } else if (authorize(authHeader)) {
             log.info("Authorization SUCCESS. RemoteClientAddress : {}, User-Agent: {}, Authorization Header : {}", remoteClientAddress, remoteUserAgent, authHeader);
