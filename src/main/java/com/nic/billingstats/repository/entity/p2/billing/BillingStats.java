@@ -143,6 +143,7 @@ public class BillingStats implements java.io.Serializable {
         this.recurringInvoicesGenerated += billingStatsCurrent.getRecurringInvoicesGenerated();
         this.amountCollected = this.amountCollected.add(billingStatsCurrent.getAmountCollected() != null ? billingStatsCurrent.getAmountCollected() : new BigDecimal(0));
         this.verifyCallCount += billingStatsCurrent.getVerifyCallCount();
+        this.setEndTime(new Date());
         return this;
     }
 }
