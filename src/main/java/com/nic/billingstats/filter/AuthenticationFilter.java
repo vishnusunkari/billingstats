@@ -54,7 +54,7 @@ class AuthenticationFilter implements Filter {
             log.debug("health check");
             chain.doFilter(request, response);
         } else if (authorize(authHeader)) {
-            log.info("Authorization SUCCESS. RemoteClientAddress : {}, User-Agent: {}, Authorization Header : {}", remoteClientAddress, remoteUserAgent, authHeader);
+            log.info("Authorization SUCCESS. RemoteClientAddress : {}, User-Agent: {}", remoteClientAddress, remoteUserAgent);
             chain.doFilter(request, response);
         } else {
             authenticationFailureResponse(remoteClientAddress, remoteUserAgent, authHeader, response);
