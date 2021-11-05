@@ -15,7 +15,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +37,7 @@ public class BillingStatsConsumer {
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) List<Integer> partitions,
                         @Header(KafkaHeaders.OFFSET) List<Long> offsets,
                         Acknowledgment acknowledgment) {
-
-        log.info("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
+        Instant start = Instant.now();
         log.info("BillingStatsConsumer.receive Begin, batch messages size : " + messages.size());
         Map<Integer, BillingStats> billingStatsMap = new HashMap<>();
 
@@ -72,7 +72,9 @@ public class BillingStatsConsumer {
          *  the membership service run completely.
          */
         acknowledgment.acknowledge();
-        log.info("BillingStatsConsumer.receive End, consume batch messages size : " + messages.size());
+        Instant end = Instant.now();
+        Duration timeElapsed = Duration.between(start, end);
+        log.info("End consume batch messages size: {}, Time taken in ms: {}", messages.size(), timeElapsed.toMillis());
     }
 
     /*@Bean
