@@ -1,12 +1,17 @@
 package com.nic.billingstats.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nic.billingstats.model.BillingStatsEvent;
 import com.nic.billingstats.model.BillingStatsMessage;
 import com.nic.billingstats.repository.entity.p2.billing.BillingStats;
 import com.nic.billingstats.repository.p2.billing.BillingStatsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,19 +25,47 @@ public class BillingStatsService {
     @Autowired
     BillingStatsRepository billingStatsRepository;
 
-    public void processBillingStats(Map<Integer, BillingStats> billingStatsMap) {
-        log.info("BillingStatsService.processBillingStats Begin");
+    @Transactional(value = "p2BillingTransactionManager")
+    public void processBillingStats(List<String> messages, List<Integer> partitions, List<Long> offsets, Map<Integer, BillingStats> billingStatsMap) {
+        try {
+            for (int i = 0; i < messages.size(); i++) {
+                log.info("received message='{}' with partition-offset='{}'",
+                        messages.get(i), partitions.get(i) + "-" + offsets.get(i));
+                ObjectMapper mapper = new ObjectMapper();
+                BillingStatsEvent billingStatsEvent = null;
+                BillingStatsMessage billingStatsMessage = null;
+                try {
+                    billingStatsEvent = mapper.readValue(messages.get(i), BillingStatsEvent.class);
+                    log.info("billingStatsEvent = " + billingStatsEvent.toString());
+                    if (billingStatsEvent != null) {
+                        billingStatsMessage = billingStatsEvent.getBillingStatsMessage();
+                        BillingStats billingStats = billingStatsMap.getOrDefault(billingStatsEvent.getBillingStatsEventId(), new BillingStats());
+                        billingStats = aggregateBillingStats(billingStats, billingStatsMessage);
+                        billingStatsMap.put(billingStatsEvent.getBillingStatsEventId(), billingStats);
+                    }
+                } catch (IOException e) {
+                    log.error("BillingStatsService.processBillingStats IOException while consuming individual billingStatsMessage", e);
+                }
+            }
+            saveBillingStats(billingStatsMap);
+        } catch (Exception e) {
+            log.error("BillingStatsService.processBillingStats Exception while consuming batch messages ", e);
+        }
+    }
+
+    public void saveBillingStats(Map<Integer, BillingStats> billingStatsMap) {
+        log.info("BillingStatsService.saveBillingStats Begin");
         for(Integer billingStatsEventId : billingStatsMap.keySet()) {
             BillingStats billingStatsCurrent = billingStatsMap.get(billingStatsEventId);
-            log.info("From billingStatsMap, billingStatsCurrent {} ", billingStatsCurrent);
+            log.debug("From billingStatsMap, billingStatsCurrent {} ", billingStatsCurrent);
             BillingStats billingStatsFromRepository = billingStatsRepository.getBillingStatsById(billingStatsEventId);
-            log.info("billingStatsFromRepository : {}", billingStatsFromRepository );
+            log.debug("billingStatsFromRepository : {}", billingStatsFromRepository );
             billingStatsCurrent = billingStatsFromRepository.updateBillingStats(billingStatsCurrent);
-            log.info("Updated billingStatsCurrent : {}", billingStatsCurrent );
+            log.debug("Updated billingStatsCurrent : {}", billingStatsCurrent );
             billingStatsRepository.save(billingStatsCurrent);
             log.info("Updated BillingStats are saved to db");
         }
-        log.info("BillingStatsService.processBillingStats End");
+        log.info("BillingStatsService.saveBillingStats End");
     }
 
     public BillingStats aggregateBillingStats(BillingStats billingStats, BillingStatsMessage billingStatsMessage) {
